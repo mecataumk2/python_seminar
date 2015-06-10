@@ -1,11 +1,31 @@
-def print_me( s ):
-    print s
-    return
 
-def add(arg1, arg2):
-    sum = arg1 + arg2
-    return sum
+print __file__
 
-print "print_me"
-print_me("call print_me")
-print add(10, 20)
+global_variable = 1
+
+def print_me( arg1, arg2 ):
+    "This prints a passed string into this function"
+    print "Print arg1: " +  arg1
+    print "Print arg2: " +  arg2
+    concat = arg1 + '+' + arg2
+    return concat
+
+def func1():
+    print 'nothing'
+    func2()
+
+
+def func2():
+    print 'nothing 2'
+
+print func1
+
+func1()
+
+ret_value = print_me("this is argument", "this is second argument")
+print "return value: " + ret_value
+
+
+
+
+
