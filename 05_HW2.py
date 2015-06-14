@@ -22,6 +22,3 @@ tree = {
  }
  }
 extract(tree)
-
-# keylist = tree.keys()
-# print keylist
