@@ -1,11 +1,21 @@
 __author__ = 'sdlee'
 
+# def extract(arg1):
+#     print arg1.keys()
+#     for x in arg1.values():
+#         if x != None:
+#             extract(x)
+#     return
+
 def extract(arg1):
-    print arg1.keys()
+    #print arg1.keys()
+    array = arg1.keys()
     for x in arg1.values():
         if x != None:
-            extract(x)
-    return
+            array.append(extract(x))
+
+    return array
+
 
 tree = {
  '01': {
@@ -21,4 +31,4 @@ tree = {
  }
  }
  }
-extract(tree)
+print extract(tree)
