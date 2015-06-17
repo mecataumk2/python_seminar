@@ -8,7 +8,6 @@ def sum( arg1, *tuple ):
     print "Sum of arguments: %s" %(sum)
     return;
 
-# Now you can call printinfo function
 sum( 10 );
 sum( 70, 60, 50 );
 
