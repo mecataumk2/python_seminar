@@ -1,26 +1,26 @@
 __author__ = 'sdlee'
 
-# def extract(arg1):
-#     print arg1.keys()
-#     for x in arg1.values():
-#         if x != None:
-#             extract(x)
-#     return
+def print_keys(arg1):
+    print arg1.keys()
+    for x in arg1.values():
+        if x != None:
+            print_keys(x)
+    return
 
-# def extract(arg1):
+# def print_keys(arg1):
 #     #print arg1.keys()
 #     array = arg1.keys()
 #     for x in arg1.values():
 #         if x != None:
-#             array.append(extract(x))
+#             array.append(print_keys(x))
 #
 #     return array
 
-def print_keys(arg1):
-    for i in sorted(arg1.keys()):
-        print i
-        if arg1[i]:
-            print_keys(i)
+# def print_keys(arg1):
+#     for i in arg1.keys():
+#         print i
+#         print_keys(arg1.values())
+
 
 
 tree = {
