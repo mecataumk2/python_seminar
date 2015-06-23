@@ -14,27 +14,33 @@ import urllib
 import os.path
 import filecmp
 
-# def print_feed_title(rss_filename):
+def print_feed_title(rss_filename):
+    print "RSS Title"
 
 # def get_linecount(filename):
 
 def rss_reader(rss_url):
     if os.path.isfile("darkan84.xml") == False:
         urllib.urlretrieve (rss_url, "darkan84.xml")
-#        print print_feed_title("darkan84.xml")
-        return 0
+        print print_feed_title("darkan84.xml")
+        return
+
+    if os.path.isfile("tmp.xml"):
+        os.remove("tmp.xml")
 
     urllib.urlretrieve (rss_url, "tmp.xml")
     if filecmp.cmp("darkan84.xml", "tmp.xml") == False:
-        before_file = open("darkan84.xml", "w+")
-        after_file = open("tmp.xml", "r")
-        before_file = after_file
-        before_file.write()
+        before_file = open("darkan84.xml", 'w')
+        after_file = open("tmp.xml", 'r')
+        lines = after_file.readlines()
+        for line in lines:
+            before_file.write(line)
+
         before_file.close()
         after_file.close()
         os.remove("tmp.xml")
 
-    # print_feed_title("darkan84.xml")
+    print_feed_title("darkan84.xml")
 
 
 
