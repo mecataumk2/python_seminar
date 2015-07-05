@@ -84,5 +84,6 @@ def rss_reader(rss_url, filename):
 url = raw_input('Enter RSS Feed url : ')
 # url = "http://onenable.tumblr.com/rss"
 # url = "http://blog.rss.naver.com/darkan84.xml"
+# url = "https://wikidocs.net/book/2/rss"
 filename = string_to_md5(url)
 rss_reader(url, filename)                                       ##### rss_reader
