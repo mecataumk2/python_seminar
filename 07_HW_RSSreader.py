@@ -21,11 +21,17 @@ def string_to_md5(string):
 #         if m:
 #             print (m.group(2))
 
+def print_site_title(rss_filename):
+    tree = parse(rss_filename)
+    note = tree.getroot()
+    for children_item in note.getchildren():
+        print "Site title : ", children_item.findtext("title")
+
 def print_feed_title(rss_filename):
     tree = parse(rss_filename)
     note = tree.getroot()
-    for children_item in note.getiterator("item"):
-        print "Title : ", children_item.findtext("title")
+    for iterator_item in note.getiterator("item"):
+        print "Item title : ", iterator_item.findtext("title")
 
 def remove_taglines(filename, tagname):
     f = open(filename, 'r')
@@ -72,10 +78,11 @@ def rss_reader(rss_url, filename):
     os.remove(no_pubDate_filename)
     os.remove(no_pubDate_tmp)
 
+    print_site_title(filename)
     print_feed_title(filename)
 
-# url = raw_input('Enter RSS Feed url : ')
+url = raw_input('Enter RSS Feed url : ')
 # url = "http://onenable.tumblr.com/rss"
-url = "http://blog.rss.naver.com/darkan84.xml"
+# url = "http://blog.rss.naver.com/darkan84.xml"
 filename = string_to_md5(url)
 rss_reader(url, filename)                                       ##### rss_reader
