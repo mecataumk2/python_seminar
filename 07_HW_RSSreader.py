@@ -1,34 +1,31 @@
 __author__ = 'sdlee'
 
-# import feedparser
-#
-# my_rss_url = "http://blog.rss.naver.com/darkan84.xml"
-# feed = feedparser.parse(my_rss_url)
-#
-# f = open("feed.txt", "wb")
-# f.write(feed)
-# f.close()
-#
-
 import urllib
 import os
 import filecmp
 import re
 import hashlib
+from xml.etree.ElementTree import parse
 
 def string_to_md5(string):
     md5 = hashlib.md5(string)
     return md5.hexdigest()
 
+# def print_feed_title(rss_filename):
+#     re_title = re.compile('(<title>.*CDATA\[)(.*)(]]></title>)')
+#     f = open(rss_filename, 'r')
+#     lines = f.readlines()
+#     f.close()
+#     for line in lines:
+#         m = re_title.search(line)
+#         if m:
+#             print (m.group(2))
+
 def print_feed_title(rss_filename):
-    re_title = re.compile('(<title>.*CDATA\[)(.*)(]]></title>)')
-    f = open(rss_filename, 'r')
-    lines = f.readlines()
-    f.close()
-    for line in lines:
-        m = re_title.search(line)
-        if m:
-            print (m.group(2))
+    tree = parse(rss_filename)
+    note = tree.getroot()
+    for children_item in note.getiterator("item"):
+        print "Title : ", children_item.findtext("title")
 
 def remove_taglines(filename, tagname):
     f = open(filename, 'r')
@@ -53,36 +50,10 @@ def rss_reader(rss_url, filename):
         print_feed_title(filename)
         return
 
-    # if os.path.isfile("tmp.xml"):                                   ##### when tempolory file is exist (pre check. Is this not mandatory?.I need some test.)
-    #     os.remove("tmp.xml")
-
     urllib.urlretrieve (rss_url, "tmp.xml")
 
     no_pubDate_filename = remove_taglines(filename, 'pubDate')                                        # Remove line using tag "<pubDate>" for file compare.
     no_pubDate_tmp = remove_taglines("tmp.xml", 'pubDate')
-
-    # downloaded_file = open(filename, 'r')                               # Remove line using tag "<pubDate>" for file compare.
-    # downloaded_file_tmp = open("downloaded_file_tmp.xml", 'w')
-    # lines_downloaded_file = downloaded_file.readlines()
-    # re_pubDate = re.compile('pubDate')
-    # for line in lines_downloaded_file:
-    #     m = re_pubDate.search(line)
-    #     # if m == None:
-    #     if not m:
-    #         downloaded_file_tmp.write(line)
-    # downloaded_file.close()
-    # downloaded_file_tmp.close()
-
-    # after_file = open("tmp.xml", 'r')
-    # after_file_tmp = open("tmp_tmp.xml", 'w')
-    # line_after = after_file.readlines()
-    # re_pubDate = re.compile('pubDate')
-    # for line in line_after:
-    #     m = re_pubDate.search(line)
-    #     if m == None:
-    #         after_file_tmp.write(line)
-    # after_file.close()
-    # after_file_tmp.close()
 
     if not filecmp.cmp(no_pubDate_filename, no_pubDate_tmp):
         print "Update!\n"                                             # move tmp.xml to filename.   ##### Move function is exist in library(os)?
