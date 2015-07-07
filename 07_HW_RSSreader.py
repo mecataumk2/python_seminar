@@ -12,12 +12,14 @@ def string_to_md5(string):
     md5 = hashlib.md5(string)
     return md5.hexdigest()
 
+
 def print_site_title(rss_filename):
     tree = ET.parse(rss_filename)
     root = tree.getroot()
     channel = root.find("channel")
     site_title = channel.findtext("title")
     print "Site title : ", site_title
+
 
 def print_feed_title(rss_filename):
     tree = ET.parse(rss_filename)
@@ -26,8 +28,7 @@ def print_feed_title(rss_filename):
         print "Item title : ", iterator_item.findtext("title")
 
 
-
-def remove_element(filename, element):
+def remove_pubDate(filename):
     filename_tmp = filename + '_tmp'
     tree = ET.parse(filename)
     root = tree.getroot()
@@ -49,11 +50,8 @@ def rss_reader(rss_url, filename):
 
     urllib.urlretrieve (rss_url, "tmp.xml")
 
-    no_pubDate_filename = remove_element(filename, "pubDate")
-    no_pubDate_tmp = remove_element("tmp.xml", "pubDate")
-
-    # no_pubDate_filename = remove_element(filename, 'pubDate')                                        # Remove element "<pubDate>" for file compare.
-    # no_pubDate_tmp = remove_element("tmp.xml", 'pubDate')
+    no_pubDate_filename = remove_pubDate(filename)
+    no_pubDate_tmp = remove_pubDate("tmp.xml")
 
     if not filecmp.cmp(no_pubDate_filename, no_pubDate_tmp):
         print "Update!\n"                                             # move tmp.xml to filename.   ##### Move function is exist in library(os)?
