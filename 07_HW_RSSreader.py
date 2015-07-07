@@ -5,47 +5,37 @@ import os
 import filecmp
 import re
 import hashlib
-from xml.etree.ElementTree import parse
+import xml.etree.ElementTree as ET
+
 
 def string_to_md5(string):
     md5 = hashlib.md5(string)
     return md5.hexdigest()
 
-# def print_feed_title(rss_filename):
-#     re_title = re.compile('(<title>.*CDATA\[)(.*)(]]></title>)')
-#     f = open(rss_filename, 'r')
-#     lines = f.readlines()
-#     f.close()
-#     for line in lines:
-#         m = re_title.search(line)
-#         if m:
-#             print (m.group(2))
-
 def print_site_title(rss_filename):
-    tree = parse(rss_filename)
-    note = tree.getroot()
-    for children_item in note.getchildren():
-        print "Site title : ", children_item.findtext("title")
+    tree = ET.parse(rss_filename)
+    root = tree.getroot()
+    channel = root.find("channel")
+    site_title = channel.findtext("title")
+    print "Site title : ", site_title
 
 def print_feed_title(rss_filename):
-    tree = parse(rss_filename)
-    note = tree.getroot()
-    for iterator_item in note.getiterator("item"):
+    tree = ET.parse(rss_filename)
+    root = tree.getroot()
+    for iterator_item in root.iter("item"):
         print "Item title : ", iterator_item.findtext("title")
 
-def remove_taglines(filename, tagname):
-    f = open(filename, 'r')
-    filename_tmp = filename + '_tmp'
-    f_tmp = open(filename_tmp, 'w')
-    re_pubDate = re.compile(tagname)
 
-    lines = f.readlines()
-    for line in lines:
-        re_object = re_pubDate.search(line)
-        if not re_object:
-            f_tmp.write(line)
-    f.close()
-    f_tmp.close()
+
+def remove_element(filename, element):
+    filename_tmp = filename + '_tmp'
+    tree = ET.parse(filename)
+    root = tree.getroot()
+    channels = root.findall("channel")
+    for parents in channels:
+        for children in parents.findall("pubDate"):
+            parents.remove(children)
+    tree.write(filename_tmp)
     return filename_tmp
 
 def rss_reader(rss_url, filename):
@@ -53,13 +43,17 @@ def rss_reader(rss_url, filename):
     if not os.path.exists(filename):                                 # when downloaded file is not exist
         urllib.urlretrieve (rss_url, filename)
         print "New RSS Feed is created succesfully."
+        print_site_title(filename)
         print_feed_title(filename)
         return
 
     urllib.urlretrieve (rss_url, "tmp.xml")
 
-    no_pubDate_filename = remove_taglines(filename, 'pubDate')                                        # Remove line using tag "<pubDate>" for file compare.
-    no_pubDate_tmp = remove_taglines("tmp.xml", 'pubDate')
+    no_pubDate_filename = remove_element(filename, "pubDate")
+    no_pubDate_tmp = remove_element("tmp.xml", "pubDate")
+
+    # no_pubDate_filename = remove_element(filename, 'pubDate')                                        # Remove element "<pubDate>" for file compare.
+    # no_pubDate_tmp = remove_element("tmp.xml", 'pubDate')
 
     if not filecmp.cmp(no_pubDate_filename, no_pubDate_tmp):
         print "Update!\n"                                             # move tmp.xml to filename.   ##### Move function is exist in library(os)?
